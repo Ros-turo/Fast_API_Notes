@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from models.schemas import NotesCreate
+from models.schemas import NotesCreate,NoteResponse
 from models.db_models import Notes
 from database import get_db
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/notes", tags=["notes"])
 
 DBSession = Annotated[Session, Depends(get_db)]
 
-@router.post("/")
+@router.post("/", response_model=NoteResponse)
 def create_notes(note: NotesCreate, db: DBSession):
 
     new_note = Notes(title=note.title,
@@ -22,7 +22,7 @@ def create_notes(note: NotesCreate, db: DBSession):
     db.refresh(new_note)
     return new_note
 
-@router.get("/")
+@router.get("/", response_model=list[NoteResponse])
 def get_notes(db: DBSession):
 
     notes = db.query(Notes).all()
