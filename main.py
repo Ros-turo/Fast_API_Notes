@@ -3,4 +3,4 @@ from router import notes
 
 app = FastAPI()
 
-app.include_router(notes)
+app.include_router(notes.router)
